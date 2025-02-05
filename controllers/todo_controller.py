@@ -16,6 +16,16 @@ class TodoRequest(BaseModel):
     priority: int = Field(gt=0, lt=6)
     completed: bool = False
 
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "title": "Buy groceries",
+                "description": "Buy milk, eggs, and bread",
+                "priority": 3,
+                "completed": False
+            }
+        }
+
 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=list[TodoRequest])
 async def read_all(db: Session = Depends(get_db)):
@@ -38,7 +48,7 @@ async def create_todo(todo_request: TodoRequest, db: Session = Depends(get_db)):
     return todo_model
 
 
-@router.put("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT, response_model=None)
 async def update_todo(todo_request: TodoRequest, todo_id: int = Path(gt=0), db: Session = Depends(get_db)):
     todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
     if todo_model is None:
@@ -53,7 +63,7 @@ async def update_todo(todo_request: TodoRequest, todo_id: int = Path(gt=0), db: 
     db.commit()
 
 
-@router.delete("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT, response_model=None)
 async def delete_todo(todo_id: int = Path(gt=0), db: Session = Depends(get_db)):
     todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
     if todo_model is None:
