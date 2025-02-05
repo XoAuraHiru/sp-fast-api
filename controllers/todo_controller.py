@@ -6,7 +6,10 @@ from starlette import status
 from config.db import get_db
 from models.todo import Todos
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/todos",
+    tags=["todos"]
+)
 
 class TodoRequest(BaseModel):
     title: str = Field(min_length=3, max_length=100)
@@ -14,30 +17,31 @@ class TodoRequest(BaseModel):
     priority: int = Field(gt=0, lt=6)
     completed: bool = False
 
-@router.get("/", status_code=status.HTTP_200_OK)
+
+@router.get("/", status_code=status.HTTP_200_OK, response_model=list[TodoRequest])
 async def read_all(db: Session = Depends(get_db)):
     return db.query(Todos).all()
 
 
-@router.get("/todo/{todo_id}", status_code=status.HTTP_200_OK)
+@router.get("/{todo_id}", status_code=status.HTTP_200_OK, response_model=TodoRequest)
 async def read_todo(todo_id: int = Path(gt=0), db: Session = Depends(get_db)):
     todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
     if todo_model is not None:
         return todo_model
     raise HTTPException(status_code=404, detail="todo not found")
 
-@router.post("/todo", status_code=status.HTTP_201_CREATED)
+
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=TodoRequest)
 async def create_todo(todo_request: TodoRequest, db: Session = Depends(get_db)):
     todo_model = Todos(**todo_request.model_dump())
-
     db.add(todo_model)
     db.commit()
+    return todo_model
 
-@router.put("/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def update_todo( todo_request: TodoRequest, todo_id: int = Path(gt=0), db: Session = Depends(get_db)):
 
+@router.put("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def update_todo(todo_request: TodoRequest, todo_id: int = Path(gt=0), db: Session = Depends(get_db)):
     todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
-
     if todo_model is None:
         raise HTTPException(status_code=404, detail="todo not found")
 
@@ -50,12 +54,10 @@ async def update_todo( todo_request: TodoRequest, todo_id: int = Path(gt=0), db:
     db.commit()
 
 
-@router.delete("/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_todo(todo_id: int = Path(gt=0), db: Session = Depends(get_db)):
-
     todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
     if todo_model is None:
         raise HTTPException(status_code=404, detail='Todo not found.')
     db.query(Todos).filter(Todos.id == todo_id).delete()
-
     db.commit()
