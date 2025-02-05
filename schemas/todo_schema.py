@@ -29,7 +29,7 @@ class TodoResponse(TodoBase):
     created_at: datetime
     updated_at: Optional[datetime]
 
-    class ModelValidate:
+    class Config:
         from_attributes = True
 
 class Todo(TodoBase):
