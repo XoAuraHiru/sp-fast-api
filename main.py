@@ -1,14 +1,7 @@
 from fastapi import FastAPI
-from config.db import engine
-from models.todo import Base
-import controllers.todo_controller as todo
+from core.config.db import engine, Base
+from routes.todo_routes import router as todo_router
 app = FastAPI(title="Todo App API")
 Base.metadata.create_all(bind=engine)
 
-app.include_router(todo.router)
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
+app.include_router(todo_router, prefix="/todos", tags=["todos"])
