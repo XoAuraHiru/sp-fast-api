@@ -1,8 +1,8 @@
-from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String, Boolean, func, DateTime
+from core.config.db import Base
 
 
-class User(BaseModel):
+class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
