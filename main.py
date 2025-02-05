@@ -7,4 +7,8 @@ Base.metadata.create_all(bind=engine)
 
 app.include_router(todo.router)
 
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
 
