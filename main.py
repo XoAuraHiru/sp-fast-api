@@ -3,7 +3,6 @@ from fastapi.params import Depends
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from starlette import status
-
 from config.db import get_db
 import models
 from config.db import engine
@@ -32,13 +31,13 @@ async def read_todo(todo_id: int = Path(gt=0), db: Session = Depends(get_db)):
 
 @app.post("/todo", status_code=status.HTTP_201_CREATED)
 async def create_todo(todo_request: TodoRequest, db: Session = Depends(get_db)):
-    todo_model = Todos(**todo_request.dict())
+    todo_model = Todos(**todo_request.model_dump())
 
     db.add(todo_model)
     db.commit()
 
-@app.put("todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def update_todo( todo_request: TodoRequest, todo_id: int = Path(gt=0), db: Session = Depends(get_db())):
+@app.put("/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def update_todo( todo_request: TodoRequest, todo_id: int = Path(gt=0), db: Session = Depends(get_db)):
 
     todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
 
@@ -48,14 +47,14 @@ async def update_todo( todo_request: TodoRequest, todo_id: int = Path(gt=0), db:
     todo_model.title = todo_request.title
     todo_model.description = todo_request.description
     todo_model.priority = todo_request.priority
-    todo_model.complete = todo_request.compete
+    todo_model.completed = todo_request.completed
 
     db.add(todo_model)
     db.commit()
 
 
 @app.delete("/todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_todo(todo_id: int = Path(gt=0), db: Session = Depends(get_db())):
+async def delete_todo(todo_id: int = Path(gt=0), db: Session = Depends(get_db)):
 
     todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
     if todo_model is None:
