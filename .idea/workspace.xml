@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="452ea21f-79d7-4555-a155-ba77db327ba1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/models/todo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +62,7 @@
       <option name="presentableId" value="Default" />
       <updated>1738729093225</updated>
       <workItem from="1738729094177" duration="2669000" />
-      <workItem from="1738733027409" duration="5071000" />
+      <workItem from="1738733027409" duration="5710000" />
     </task>
     <servers />
   </component>
