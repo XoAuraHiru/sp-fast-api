@@ -4,14 +4,14 @@ from sqlalchemy.orm import Session
 from core.db import get_db
 from repositories.auth_repository import AuthRepository
 from utils.jwt import verify_token
+from models.user import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
-
 
 def get_current_user(
         token: str = Depends(oauth2_scheme),
         db: Session = Depends(get_db)
-) -> int:
+) -> User:  # Change return type to User
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -31,4 +31,4 @@ def get_current_user(
     if user is None:
         raise credentials_exception
 
-    return user.id
+    return user

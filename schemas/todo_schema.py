@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 class TodoBase(BaseModel):
     title: str
-    description: Optional[str] = None
+    description: str
     completed: bool = False
 
 class TodoCreate(TodoBase):
