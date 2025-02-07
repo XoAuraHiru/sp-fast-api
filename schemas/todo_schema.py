@@ -5,6 +5,7 @@ from typing import Optional, List
 class TodoBase(BaseModel):
     title: str
     description: str
+    priority: int = 1
     completed: bool = False
 
 class TodoCreate(TodoBase):
