@@ -1,21 +1,19 @@
 from sqlalchemy.orm import Session
-from models import user as model
-from schemas import user_schema as schemas
-from typing import Optional
-
+from models.user import User
+from schemas.user_schema import UserCreate
 
 class UserRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def get_by_username(self, username: str) -> Optional[model]:
-        return self.db.query(model).filter(model.username == username).first()
+    def get_by_username(self, username: str):
+        return self.db.query(User).filter(User.username == username).first()
 
-    def get_by_email(self, email: str) -> Optional[model]:
-        return self.db.query(model).filter(model.email == email).first()
+    def get_by_id(self, user_id: int):
+        return self.db.query(User).filter(User.id == user_id).first()
 
-    def create(self, user: schemas.UserCreate, hashed_password: str) -> model:
-        db_user = model(
+    def create(self, user: UserCreate, hashed_password: str):
+        db_user = User(
             email=user.email,
             username=user.username,
             hashed_password=hashed_password

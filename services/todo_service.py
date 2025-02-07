@@ -1,30 +1,55 @@
-from fastapi import HTTPException
-
+from fastapi import HTTPException, status
+from typing import List, Optional
 from repositories.todo_repository import TodoRepository
-from schemas.todo_schema import TodoResponse, TodoCreate, TodoUpdate
+from schemas.todo_schema import TodoCreate, TodoResponse
 
 
 class TodoService:
+    def __init__(self, todo_repository: TodoRepository):
+        self.repository = todo_repository
 
-    def __init__(self, repo: TodoRepository):
-        self.repo = repo
+    def get_user_todos(self, user_id: int) -> List[TodoResponse]:
+        return self.repository.get_user_todos(user_id)
 
-    def get_all(self):
-        todos = self.repo.get_all()
-        return [TodoResponse.model_validate(todo) for todo in todos]
+    def create_todo(self, todo: TodoCreate, user_id: int) -> TodoResponse:
+        try:
+            return self.repository.create(todo, user_id)
+        except ValueError as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(e)
+            )
 
-    def get_by_id(self, todo_id):
-        todo = self.repo.get_by_id(todo_id)
-        return TodoResponse.model_validate(todo)
+    def update_todo(self, todo_id: int, todo: TodoCreate, user_id: int) -> TodoResponse:
+        updated_todo = self.repository.update(todo_id, user_id, todo)
+        if not updated_todo:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Todo not found or unauthorized"
+            )
+        return updated_todo
 
-    def create_todo(self, todo: TodoCreate) -> TodoResponse:
-        todo = self.repo.create(todo)
-        return TodoResponse.model_validate(todo)
+    def delete_todo(self, todo_id: int, user_id: int) -> None:
+        if not self.repository.delete(todo_id, user_id):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Todo not found or unauthorized"
+            )
 
-    def update_todo(self, todo_id: int, todo: TodoUpdate) -> TodoResponse:
-        todo = self.repo.update(todo_id, todo)
-        return TodoResponse.model_validate(todo)
+    def get_todo(self, todo_id: int, user_id: int) -> TodoResponse:
+        todo = self.repository.get_todo(todo_id, user_id)
+        if not todo:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Todo not found or unauthorized"
+            )
+        return todo
 
-    def delete_todo(self, todo_id) -> None:
-        if not self.delete_todo(todo_id):
-            raise HTTPException(status_code=404, detail="todo not found")
+    def get_all_todos(self):
+        todo = self.repository.get_all_todo()
+        if not todo:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Todo not found"
+            )
+        return todo
