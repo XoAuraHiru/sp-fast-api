@@ -9,3 +9,7 @@ class UserService:
     def get_all(self):
         users = self.repo.get_all()
         return [UserResponse.model_validation(user) for user in users]
+
+    def create_user(self, user):
+        user = self.repo.create(user)
+        return UserResponse.model_validation(user)

@@ -1,41 +1,30 @@
-from datetime import datetime
+from pydantic import BaseModel, EmailStr
 from typing import Optional
+from datetime import datetime
 
-from pydantic import Field, BaseModel
+class UserCreate(BaseModel):
+    email: EmailStr
+    username: str
+    password: str
 
-
-class UserBase(BaseModel):
-    email: str = Field(..., min_length=3)
-    password: str = Field(..., min_length=8)
-    name: str = Field(..., min_length=3)
-    is_active: bool = True
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "email": "<EMAIL>",
-                "password": "<PASSWORD>",
-                "name": "John Doe",
-                "is_active": True
-            }
-        }
-
-
-class UserCreate(UserBase):
-    pass
-
-class UserUpdate(UserBase):
-    pass
-
-class UserResponse(UserBase):
+class UserResponse(BaseModel):
     id: int
+    email: EmailStr
+    username: str
     created_at: datetime
-    updated_at: Optional[datetime]
 
     class Config:
         from_attributes = True
 
-class User(UserBase):
-    id: int
-    class Config:
-        from_attributes = True
+class Token(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+class TokenPayload(BaseModel):
+    sub: Optional[int] = None
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
