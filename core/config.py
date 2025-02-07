@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     # JWT settings
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_SECRET_KEY: str
 
     class Config:
         env_file = ".env"

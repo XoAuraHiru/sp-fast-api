@@ -79,8 +79,7 @@ class TodoRepository:
 
     def get_all_todo(self):
         query = """
-            SELECT id, user_id, title, description, completed, created_at
-            FROM todos
+            SELECT * FROM todos
         """
 
         todos = self.sf_conn.fetch_records(query, [])

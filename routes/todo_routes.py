@@ -34,24 +34,20 @@ async def create_todo(
     current_user: int = Depends(get_current_user),
     todo_service: TodoService = Depends(get_todo_service)
 ) -> TodoResponse:
-    """
-    Create a new todo for the authenticated user
-    """
     return todo_service.create_todo(todo, current_user)
 
-@router.put(
-    "/{todo_id}", 
+@router.get(
+    "/{todo_id}",
     response_model=TodoResponse,
     status_code=status.HTTP_200_OK,
-    summary="Update an existing todo"
+    summary="Get a specific todo"
 )
-async def update_todo(
+async def get_todo(
     todo_id: int,
-    todo: TodoCreate,
-    current_user: int = Depends(get_current_user),
+    user_id: int = Depends(get_current_user),
     todo_service: TodoService = Depends(get_todo_service)
 ) -> TodoResponse:
-    return todo_service.update_todo(todo_id, todo, current_user)
+    return todo_service.get_todo(todo_id, user_id)
 
 @router.delete(
     "/{todo_id}",

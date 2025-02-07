@@ -1,11 +1,19 @@
 from fastapi import FastAPI
-# from core.config.db import engine, Base
+from core.db import engine, Base, SessionLocal
+from routes.auth_routes import router as auth_router
 from routes.todo_routes import router as todo_router
-from routes.user_routes import router as user_router
-from models.todo import Todo
-from models.user import User
-app = FastAPI(title="Todo App API")
-# Base.metadata.create_all(bind=engine)
+from utils.default_user import create_default_user
 
+app = FastAPI(title="Todo App API")
+
+@app.on_event("startup")
+async def startup_event():
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        create_default_user(db)
+    finally:
+        db.close()
+
+app.include_router(auth_router)
 app.include_router(todo_router, prefix="/todos", tags=["todos"])
-app.include_router(user_router, prefix="/users", tags=["users"])
