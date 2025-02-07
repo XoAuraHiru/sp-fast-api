@@ -4,7 +4,6 @@ from core.sf_connection import SnowflakeConnector
 
 
 class TodoRepository:
-
     SELECT_TODO_FIELDS = """
         SELECT id, user_id, title, description, completed, created_at
         FROM todos
@@ -13,17 +12,23 @@ class TodoRepository:
     INSERT_TODO = """
         INSERT INTO todos (title, description, completed, user_id)
         VALUES (%s, %s, %s, %s)
-        RETURNING id, user_id, title, description, completed, created_at
     """
 
     UPDATE_TODO = """
         UPDATE todos 
         SET title = %s, description = %s, completed = %s
         WHERE id = %s AND user_id = %s
-        RETURNING id, user_id, title, description, completed, created_at
     """
 
     DELETE_TODO = "DELETE FROM todos WHERE id = %s AND user_id = %s"
+
+    SELECT_LAST_INSERTED = """
+        SELECT id, user_id, title, description, completed, created_at
+        FROM todos 
+        WHERE user_id = %s 
+        ORDER BY created_at DESC 
+        LIMIT 1
+    """
 
     def __init__(self, sf_conn: SnowflakeConnector):
         self.sf_conn = sf_conn
@@ -40,10 +45,12 @@ class TodoRepository:
         )
 
     def create(self, todo: TodoCreate, user_id: int) -> Optional[TodoResponse]:
-        result = self.sf_conn.fetch_records(
+        self.sf_conn.commit_record(
             self.INSERT_TODO,
             [todo.title, todo.description, todo.completed, user_id]
         )
+
+        result = self.sf_conn.fetch_records(self.SELECT_LAST_INSERTED, [user_id])
         return self.row_to_todo(result[0]) if result else None
 
     def get_todos(self, user_id: int) -> List[TodoResponse]:
@@ -57,11 +64,11 @@ class TodoRepository:
         return self.row_to_todo(result[0]) if result else None
 
     def update(self, todo_id: int, user_id: int, todo: TodoCreate) -> Optional[TodoResponse]:
-        result = self.sf_conn.fetch_records(
+        self.sf_conn.commit_record(
             self.UPDATE_TODO,
             [todo.title, todo.description, todo.completed, todo_id, user_id]
         )
-        return self.row_to_todo(result[0]) if result else None
+        return self.get_todo(todo_id, user_id)
 
     def delete(self, todo_id: int, user_id: int) -> bool:
         try:
