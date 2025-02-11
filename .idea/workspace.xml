@@ -6,13 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="452ea21f-79d7-4555-a155-ba77db327ba1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/security.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/security.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/auth_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/routes/auth_routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schemas/user_schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemas/user_schema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/auth_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/hash_password.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/jwt.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,6 +76,7 @@
       <workItem from="1738898453466" duration="25788000" />
       <workItem from="1739161789009" duration="10421000" />
       <workItem from="1739188016983" duration="18000" />
+      <workItem from="1739245922946" duration="1366000" />
     </task>
     <servers />
   </component>
