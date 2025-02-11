@@ -8,7 +8,7 @@ app = FastAPI(title="Todo App API")
 
 @app.on_event("startup")
 async def startup_event():
-    Base.metadata.create_all(bind=engine)
+    #Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
         create_default_user(db)
