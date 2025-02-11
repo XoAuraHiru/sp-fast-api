@@ -4,6 +4,7 @@ from models.user import User
 from repositories.todo_repository import TodoRepository
 from schemas.todo_schema import TodoCreate, TodoResponse, TodoUpdate
 
+
 class TodoService:
     def __init__(self, repository: TodoRepository):
         self.repository = repository

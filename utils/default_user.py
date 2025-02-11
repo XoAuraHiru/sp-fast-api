@@ -8,6 +8,7 @@ DEFAULT_USER = {
     "password": "admin123"
 }
 
+
 def create_default_user(db: Session) -> None:
     user = db.query(User).filter(User.email == DEFAULT_USER["email"]).first()
     if not user:

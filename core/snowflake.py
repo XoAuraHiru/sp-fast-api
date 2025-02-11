@@ -2,6 +2,7 @@ import snowflake.connector
 from contextlib import contextmanager
 from .config import settings
 
+
 @contextmanager
 def get_snowflake_conn():
     conn = snowflake.connector.connect(

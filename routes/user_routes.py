@@ -8,12 +8,14 @@ from services.user_service import UserService
 
 router = APIRouter()
 
+
 def get_user_service(db: Session = Depends(get_db)) -> UserService:
     user_repository = UserRepository(db)
     return UserService(user_repository)
 
+
 @router.get("/", response_model=list[UserResponse])
 def get_users(
-    user_service: UserService = Depends(get_user_service)
+        user_service: UserService = Depends(get_user_service)
 ):
     return user_service.get_all()

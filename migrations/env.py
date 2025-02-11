@@ -10,6 +10,7 @@ target_metadata = Base.metadata
 if context.config.config_file_name is not None:
     fileConfig(context.config.config_file_name)
 
+
 def run_migrations_offline() -> None:
     url = context.config.get_main_option("sqlalchemy.url")
     context.configure(
@@ -21,6 +22,7 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
+
 def run_migrations_online() -> None:
     connectable = engine_from_config(
         context.config.get_section(context.config.config_ini_section, {}),
@@ -31,6 +33,7 @@ def run_migrations_online() -> None:
         context.configure(connection=connection, target_metadata=target_metadata)
         with context.begin_transaction():
             context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()

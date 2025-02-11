@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class SnowflakeConnector:
     def __init__(self):
         self.engine = None
