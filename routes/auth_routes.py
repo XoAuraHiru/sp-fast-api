@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from core.db import get_db
 from services.auth_service import AuthService
 from repositories.auth_repository import AuthRepository
-from schemas.user_schema import UserCreate, Token
+from schemas.user_schema import UserCreate, Token, RefreshToken
+from core.security import verify_refresh_token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -25,3 +26,16 @@ async def login(
     auth_service: AuthService = Depends(get_auth_service)
 ) -> Token:
     return auth_service.login(form_data.username, form_data.password)
+
+@router.post("/refresh", response_model=Token)
+async def refresh_token(
+    refresh_token: RefreshToken,
+    auth_service: AuthService = Depends(get_auth_service)
+) -> Token:
+    payload = verify_refresh_token(refresh_token.refresh_token)
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token"
+        )
+    return auth_service.refresh_tokens(payload)
