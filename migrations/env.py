@@ -4,6 +4,7 @@ from alembic import context
 
 from core.db import Base
 import models.user
+import models.RefreshToken
 
 target_metadata = Base.metadata
 
